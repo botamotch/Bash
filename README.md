@@ -18,11 +18,42 @@ $ if ! `echo ${list[@]} | grep -x $x`; then
 > done
 ```
 
-## forで回すときの区切りを変更
+## for
+回すときの区切りを変更
 ```sh
 (
 $ IFS=$'\n'
 ...
 )
+```
+
+seqで負の値起点のループも可能
+```sh
+MAX=$(( 0x0100))
+MIN=$((-0x0100))
+STEP=$((0x0020))
+
+for val in $(seq $MIN $STEP $MAX); do
+    echo $val
+done
+```
+
+## Int16 > HEX
+
+One-lineでもできるけど長ったらしいので省略
+```sh
+for val in $(seq $MIN $STEP $MAX); do
+    if [ $val -ge 0 ]; then
+        cmd=$(printf "echo %04X" $val)
+    else
+        cmd=$(printf "echo %04X" $(($val+0x10000)))
+    fi
+    echo $cmd : $($cmd)
+done
+```
+
+zshだとこれができる。微妙な違いだけど助かる
+```sh
+echo $(printf "echo %04X" $val+0x10000)
 ```
 
